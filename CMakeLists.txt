@@ -7,11 +7,20 @@ project(gaitest)
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   rospy
+  roscpp
   std_msgs
+  pcl_ros
+  pcl_conversions
 )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
+find_package(PCL 1.2 REQUIRED)
+find_package(catkin REQUIRED COMPONENTS nodelet)
+
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -129,6 +138,8 @@ include_directories(
 
 ## Declare a C++ executable
 # add_executable(gaitest_node src/gaitest_node.cpp)
+add_executable(pcl_example src/pcl_example.cpp)
+add_executable (pcl_visual src/pcl_visual.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -138,6 +149,11 @@ include_directories(
 # target_link_libraries(gaitest_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(pcl_example
+  ${catkin_LIBRARIES}
+)
+target_link_libraries (pcl_example ${PCL_LIBRARIES})
+target_link_libraries (pcl_visual ${PCL_LIBRARIES})
 
 #############
 ## Install ##
@@ -186,3 +202,5 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+

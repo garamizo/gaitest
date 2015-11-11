@@ -1,0 +1,8 @@
+<launch>
+
+  <node name="rosplay" pkg="rosbag" type="play" args="/home/hirolab/catkin_ws/dataset0.bag --clock"/>
+
+
+  <node name="crop" pkg="nodelet" type="nodelet" args="load image_proc/crop_decimate $(arg manager) $(arg bond)" respawn="$(arg respawn)" />
+
+</launch>

@@ -1,0 +1,20 @@
+<!-- Launch in the camera namespace containing "image_raw" and "camera_info" -->
+<launch>
+
+  <!-- Play recording of FPV, imu and mocap -->
+  <node name="rosplay" pkg="rosbag" type="play" 
+    args="/home/hirolab/catkin_ws/dataset0.bag --clock"/>
+
+  <!-- Crop images -->
+  <node pkg="nodelet" type="nodelet" name="manager" args="manager"/>
+  <node pkg="nodelet" type="nodelet" name="crop"
+        args="load image_proc/crop_decimate manager"
+	respawn="false">
+    <remap from="camera" to="usb_cam" />
+    <param name="x_offset" value="1" />
+    <param name="y_offset" value="1" />
+    <param name="width" value="200" />
+    <param name="height" value="200" />
+  </node>
+
+</launch>

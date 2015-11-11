@@ -1,0 +1,57 @@
+<launch>
+
+	<node pkg="tf" type="static_transform_publisher" name="t" args="0 0 0 0 0 0 /odom /left 10"/>
+
+	<arg name="camera_name_left" default="left" />
+	<arg name="camera_frame_id_left" default="left" />
+	<arg name="camera_info_url_left" default="file:///home/hirolab/.ros/camera_info/left.yaml" />
+
+	<arg name="camera_name_right" default="right" />
+	<arg name="camera_frame_id_right" default="right" />
+	<arg name="camera_info_url_right" default="file:///home/hirolab/.ros/camera_info/right.yaml" />
+
+	<group ns="stereo">
+
+		<node name="$(arg camera_name_right)" pkg="usb_cam" type="usb_cam_node" output="screen" >
+			<param name="video_device" value="/dev/video1" />
+			<param name="image_width" value="320" />
+			<param name="image_height" value="240" />
+			<param name="pixel_format" value="yuyv" />
+			<param name="camera_frame_id" value="$(arg camera_frame_id_right)" />
+			<param name="camera_info_url" value="$(arg camera_info_url_right)" />
+			<param name="io_method" value="mmap" />
+			<param name="framerate" value="15" />
+		</node>
+
+		<node name="$(arg camera_name_left)" pkg="usb_cam" type="usb_cam_node" output="screen" >
+			<param name="video_device" value="/dev/video0" />
+			<param name="image_width" value="320" />
+			<param name="image_height" value="240" />
+			<param name="pixel_format" value="yuyv" />
+			<param name="camera_frame_id" value="$(arg camera_frame_id_left)" />
+			<param name="camera_info_url" value="$(arg camera_info_url_left)" />
+			<param name="io_method" value="mmap"/>
+			<param name="framerate" value="15"/>
+		</node>
+
+		<node name="stereo_proc" pkg="stereo_image_proc" type="stereo_image_proc" >
+			<param name="approximate_sync" value="True" />
+			<param name="queue_size" value="5" />
+			<param name="min_disparity" value="-60" />
+		</node>
+
+	</group>
+
+<!-- 	<node name="image_view_left" pkg="image_view" type="image_view" respawn="false" output="screen">
+		<remap from="image" to="/stereo/$(arg camera_name_left)/image_raw"/>
+		<param name="autosize" value="true" />
+	</node>
+
+	<node name="image_view_right" pkg="image_view" type="image_view" respawn="false" output="screen">
+		<remap from="image" to="/stereo/$(arg camera_name_right)/image_raw"/>
+		<param name="autosize" value="true" />
+	</node> -->
+
+
+
+</launch>
