@@ -53,7 +53,7 @@
       filter_limit_min: 0.01
       filter_limit_max: 1.5
       filter_limit_negative: False
-      leaf_size: 0.1
+      leaf_size: 0.01
     </rosparam>
   </node>
 
@@ -63,7 +63,7 @@
     <rosparam>
       # -[ Mandatory parameters
       k_search: 0
-      radius_search: 0.15
+      radius_search: 0.015
       # Set the spatial locator. Possible values are: 0 (ANN), 1 (FLANN), 2 (organized)
       spatial_locator: 0
     </rosparam>
