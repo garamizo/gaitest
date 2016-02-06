@@ -1,5 +1,8 @@
 <launch>
-  <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen" />
+
+  <include file="$(find leap_motion)/launch/leap_camera.launch" />
+  <include file="$(find leap_motion)/launch/leap_stereo.launch" />
+
 
   <!-- Run a VoxelGrid filter to clean NaNs and downsample the data -->
   <node pkg="nodelet" type="nodelet" name="voxel_grid" args="load pcl/VoxelGrid pcl_manager" output="screen">
@@ -7,7 +10,7 @@
     <rosparam>
       filter_field_name: z
       filter_limit_min: 0.01
-      filter_limit_max: 1.5
+      filter_limit_max: 1
       filter_limit_negative: False
       leaf_size: 0.01
     </rosparam>
@@ -26,32 +29,13 @@
   </node>
 
   <!-- Segment the table plane -->
-<!--   <node pkg="nodelet" type="nodelet" name="planar_segmentation" args="load pcl/SACSegmentationFromNormals pcl_manager" output="screen">
+  <node pkg="nodelet" type="nodelet" name="planar_segmentation" args="load pcl/SACSegmentationFromNormals pcl_manager" output="screen">
     <remap from="~input"   to="/voxel_grid/output" />
     <remap from="~normals" to="/normal_estimation/output" />
     <rosparam>
       # -[ Mandatory parameters
-      # model_type:
-      # 0: SACMODEL_PLANE
-      # 1: SACMODEL_LINE
-      # 2: SACMODEL_CIRCLE2D
-      # 3: SACMODEL_CIRCLE3D
-      # 4: SACMODEL_SPHERE
-      # 5: SACMODEL_CYLINDER
-      # 6: SACMODEL_CONE
-      # 7: SACMODEL_TORUS
-      # 8: SACMODEL_PARALLEL_LINE
-      # 9: SACMODEL_PERPENDICULAR_PLANE
-      # 10: SACMODEL_PARALLEL_LINES
-      # 11: SACMODEL_NORMAL_PLANE
-      # 12: SACMODEL_NORMAL_SPHERE
-      # 13: SACMODEL_REGISTRATION
-      # 14: SACMODEL_REGISTRATION_2D
-      # 15: SACMODEL_PARALLEL_PLANE
-      # 16: SACMODEL_NORMAL_PARALLEL_PLANE
-      # 17: SACMODEL_STICK
       model_type: 11
-      distance_threshold: 0.1
+      distance_threshold: 0.05
       max_iterations: 1000
       method_type: 0
       optimize_coefficients: true
@@ -64,7 +48,10 @@
     <remap from="~input"   to="/voxel_grid/output" />
     <remap from="~indices" to="/planar_segmentation/inliers" />
     <rosparam>
-      negative: true
+      negative: false
+      approximate_sync: true
+      max_queue_size: 5
     </rosparam>
-  </node> -->
+  </node>
+
 </launch>
