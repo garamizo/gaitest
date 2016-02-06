@@ -1,0 +1,6 @@
+<launch>
+
+  <include file="$(find leap_motion)/launch/leap_camera.launch" />
+  <include file="$(find leap_motion)/launch/leap_stereo.launch" />
+  
+</launch>
