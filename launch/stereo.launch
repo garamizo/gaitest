@@ -96,6 +96,12 @@
     </rosparam>
   </node>
 
+  <node pkg="um7" type="um7_driver" name="imu_node">
+    <param name="port" value="/dev/ttyUSB0" />
+  </node>
+
+  <node pkg="tf" type="static_transform_publisher" name="t1a" args="0 0 0 1.57 0 0 left imu_link 10" />
+
 <!--   <node pkg="nodelet" type="nodelet" name="extract_plane_indices" args="load pcl/ExtractIndices pcl_manager" output="screen">
     <remap from="~input"   to="/voxel_grid/output" />
     <remap from="~indices" to="/planar_segmentation/inliers" />
