@@ -28,13 +28,13 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-target_link_libraries(pcl_example
-  ${catkin_LIBRARIES}
-)
-
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_executable(gest src/gest.cpp)
-target_link_libraries(gest ${catkin_LIBRARIES})
+target_link_libraries(gest ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 add_dependencies(gest ground_est_cpp)
+
+add_executable(gest2 src/gest2.cpp)
+target_link_libraries(gest2 ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+add_dependencies(gest2 ground_est_cpp)
 
