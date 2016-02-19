@@ -38,3 +38,7 @@ add_executable(gest2 src/gest2.cpp)
 target_link_libraries(gest2 ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 add_dependencies(gest2 ground_est_cpp)
 
+add_executable(gest3 src/gest3.cpp)
+target_link_libraries(gest3 ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+add_dependencies(gest3 ground_est_cpp)
+

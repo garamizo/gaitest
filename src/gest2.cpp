@@ -26,6 +26,8 @@
 
 #include <pcl/filters/extract_indices.h>
 
+#include <Eigen/Dense>
+
 typedef pcl::PointCloud<pcl::PointXYZ> PCLCloud;
 
 ros::Publisher pub, pubCoef;
@@ -38,19 +40,36 @@ cloud_cb (const sensor_msgs::PointCloud2ConstPtr& input)
   pcl::PCLPointCloud2ConstPtr cloudPtr(cloud);
   // pcl::PCLPointCloud2 cloud_filtered;
 
-  pcl::PCLPointCloud2::Ptr cloud_blob (new pcl::PCLPointCloud2), cloud_filtered_blob (new pcl::PCLPointCloud2);
+  pcl::PCLPointCloud2::Ptr cloud_blob (new pcl::PCLPointCloud2);
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered (new pcl::PointCloud<pcl::PointXYZ>), cloud_p (new pcl::PointCloud<pcl::PointXYZ>), cloud_f (new pcl::PointCloud<pcl::PointXYZ>);
 
   // Convert to PCL data type
   pcl_conversions::toPCL(*input, *cloud_blob);
 
   // Perform the actual filtering
+  pcl::PCLPointCloud2::Ptr cloud_filtered_blob (new pcl::PCLPointCloud2);
   pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
   sor.setInputCloud (cloud_blob);
   sor.setLeafSize (0.05, 0.05, 0.05);
   sor.setFilterFieldName("z");
-  sor.setFilterLimits(0.01, 1);
+  sor.setFilterLimits(0.01, 0.3);
   sor.filter (*cloud_filtered_blob);
+
+  // // Remove outlier X
+  // pcl::PCLPointCloud2::Ptr cloud_filtered_blobx (new pcl::PCLPointCloud2);
+  // pcl::VoxelGrid<pcl::PCLPointCloud2> sorx;
+  // sorx.setInputCloud(cloud_filtered_blobz);
+  // sorx.setFilterFieldName("x");
+  // sorx.setFilterLimits(-1, 1);
+  // sorx.filter(*cloud_filtered_blobx);
+
+  // // Remove outlier Y
+  // pcl::PCLPointCloud2::Ptr cloud_filtered_blob (new pcl::PCLPointCloud2);
+  // pcl::VoxelGrid<pcl::PCLPointCloud2> sory;
+  // sory.setInputCloud(cloud_filtered_blobx);
+  // sory.setFilterFieldName("y");
+  // sory.setFilterLimits(-1, 1);
+  // sory.filter(*cloud_filtered_blob);
 
   // Convert to the templated PointCloud
   pcl::fromPCLPointCloud2 (*cloud_filtered_blob, *cloud_filtered);
@@ -64,6 +83,9 @@ cloud_cb (const sensor_msgs::PointCloud2ConstPtr& input)
   // Mandatory
   seg.setModelType (pcl::SACMODEL_PLANE);
   seg.setMethodType (pcl::SAC_RANSAC);
+  Eigen::Vector3f upVector(0, 0, 1);
+  seg.setAxis(upVector);
+  seg.setEpsAngle(1.5708);
   seg.setMaxIterations (1000);
   seg.setDistanceThreshold (0.05);
   seg.setInputCloud (cloud_filtered);
